@@ -1,50 +1,106 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report:
+Version: template → 1.0.0
+Initial creation for gear-generator project
+Principles: Library-First, CLI Interface, Test-First, Integration Testing, Observability
+Added sections: Additional Constraints (Python 3.12+), Development Workflow (Specify toolkit)
+Templates: ✅ validated - all templates are generic and align with these principles
+TODO: RATIFICATION_DATE - project is new, marking as initial ratification
+-->
+
+# Gear Generator Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Library-First
+Every feature starts as a standalone library with a clear, focused purpose.
+Libraries MUST be self-contained, independently testable, and well-documented.
+No organizational-only or scaffolding libraries—every library must deliver
+measurable value. This principle ensures modularity, reusability, and clear
+separation of concerns.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. CLI Interface
+Every library MUST expose its functionality via a command-line interface.
+Use text in/out protocol: stdin/args → stdout, errors → stderr. Support
+both JSON (for programmatic use) and human-readable formats. This ensures
+libraries are accessible, testable, and composable in scripts and pipelines.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Test-First (NON-NEGOTIABLE)
+TDD is mandatory for all feature development. The workflow is strict:
+1. Tests written
+2. User approval
+3. Tests fail (verification)
+4. Then implement
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+The Red-Green-Refactor cycle is strictly enforced. This prevents defects
+and ensures test coverage from the start.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### IV. Integration Testing
+Integration tests MUST be written for: new library contract tests,
+contract changes, inter-library communication, and shared schemas. Unit
+tests cover internal logic; integration tests verify real-world scenarios
+and library interactions work correctly.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### V. Observability
+All code MUST use structured logging for debugging and monitoring. The
+rich library is preferred for colored output and callouts. Text I/O
+protocols ensure debuggability. Logging levels MUST be appropriate:
+DEBUG for development, INFO for normal operation, WARNING for issues,
+ERROR for failures.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+## Additional Constraints
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### Technology Stack
+- Python 3.12+ required
+- Use `uv` for virtual environment and dependency management
+- Prefer enums over magic strings for static values
+- Avoid `Any` type—use concrete types
+- Use pytest for testing with `just test` command
+- Explicit pytest.mark.unit decorations required
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### Code Quality
+- All code MUST pass linting checks
+- No disabling warnings in test commands
+- Configuration models centralized in their own package
+- Test plugins placed under tests system directory
+
+## Development Workflow
+
+### Specify Toolkit
+This project uses the Specify toolkit for feature development:
+
+1. **Specification**: Use `/speckit.specify` command to generate feature
+   specs from user requirements
+2. **Planning**: Use `/speckit.plan` command to create implementation
+   plans with technical design
+3. **Tasks**: Use `/speckit.tasks` command to generate actionable task
+   lists from design documents
+4. **Checklist**: Use `/speckit.checklist` command to create validation
+   checklists
+
+Each feature follows: spec.md → plan.md → tasks.md → implementation.
+Feature specifications include user stories prioritized as P1, P2, P3.
+Each user story MUST be independently testable and deliverable.
+
+### Versioning
+Dynamic versioning from `__init__.py`—versions MUST NOT be hardcoded
+in pyproject.toml. Follow semantic versioning (MAJOR.MINOR.PATCH) for
+releases.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution supersedes all other practices and must be respected
+in all development work. All PRs and code reviews MUST verify compliance
+with these principles.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+Amendments require:
+1. Documentation of the proposed change
+2. Justification for the amendment
+3. Update to this file with version bump
+4. Synchronization with affected templates and documentation
+
+Complexity MUST be justified—simpler alternatives rejected must be
+documented. Use this constitution as the primary guidance for all
+development decisions.
+
+**Version**: 1.0.0 | **Ratified**: 2025-01-27 | **Last Amended**: 2025-01-27
