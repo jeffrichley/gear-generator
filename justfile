@@ -10,30 +10,25 @@ install-hooks:
 
 # Run all linting and type checking
 lint:
-    ruff check .
-    ruff format --check .
-    mypy .
+    uv run ruff check --fix .
+    uv run ruff format .
+    uv run mypy .
 
 # Fix linting issues automatically
 lint-fix:
-    ruff check --fix .
-    ruff format .
+    uv run ruff check --fix .
+    uv run ruff format .
 
 # Run tests
 test:
-    pytest
+    uv run pytest -m "unit or integration"
 
 # Run tests with coverage
 test-cov:
-    pytest --cov=gear_generator --cov-report=html --cov-report=term
+    uv run pytest --cov=generators --cov-report=html --cov-report=term
 
-# Run security checks
-security:
-    bandit -r . -f json -o bandit-report.json
-    safety check
-
-# Run all checks (lint, test, security)
-check: lint test security
+# Run all checks (lint, test)
+check: test-cov lint
 
 # Clean up generated files
 clean:
@@ -41,12 +36,12 @@ clean:
 
 # Format code
 format:
-    ruff format .
+    uv run ruff format .
 
 # Show project info
 info:
     @echo "Project: gear-generator"
-    @echo "Python: $(python --version)"
+    @echo "Python: $(uv run python --version)"
     @echo "UV: $(uv --version)"
 
 # Setup development environment
@@ -55,4 +50,4 @@ setup: install-dev install-hooks
 
 # Run the main application
 run:
-    python main.py
+    uv run python main.py

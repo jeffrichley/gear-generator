@@ -165,6 +165,9 @@ cython_debug/
 # VS Code
 .vscode/
 
+# Specify automation artifacts
+.specify/
+
 # Security reports
 bandit-report.json
 
@@ -176,3 +179,9 @@ bandit-report.json
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# UV virtual environment and generated artifacts
+/.venv/
+uv.lock
+/outputs/
+/data/tolerances/*.yaml

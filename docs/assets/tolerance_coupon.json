@@ -1,0 +1,20 @@
+{
+  "files": [
+    {
+      "path": "docs/assets/tolerance_coupon.stl",
+      "format": "stl"
+    },
+    {
+      "path": "docs/assets/tolerance_coupon.step",
+      "format": "step"
+    }
+  ],
+  "baseDiameter": 5.0,
+  "offsets": [
+    -0.2,
+    -0.1,
+    0.0,
+    0.1,
+    0.2
+  ]
+}
