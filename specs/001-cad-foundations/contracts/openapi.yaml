@@ -1,0 +1,301 @@
+openapi: 3.1.0
+info:
+  title: Gear Generator CAD Foundations API (Conceptual)
+  version: 0.1.0
+  description: >-
+    REST-style representation of the CLI behaviors planned for Phase 0. Provides
+    a contract reference for future automation or service wrappers.
+servers:
+  - url: https://example.com/api
+    description: Placeholder server; Phase 0 executes locally via CLI.
+paths:
+  /env/verify:
+    post:
+      summary: Verify workstation environment readiness
+      operationId: verifyEnvironment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnvVerifyRequest'
+      responses:
+        '200':
+          description: Environment profile with dependency status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentProfile'
+        '422':
+          description: Verification failed due to missing prerequisites
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /scaffold/ensure:
+    post:
+      summary: Validate and optionally create repository skeleton
+      operationId: ensureScaffold
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScaffoldRequest'
+      responses:
+        '200':
+          description: Scaffold validation report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScaffoldReport'
+  /examples/hello-gear:
+    post:
+      summary: Generate the reference hello gear geometry
+      operationId: generateHelloGear
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HelloGearRequest'
+      responses:
+        '201':
+          description: Artifact metadata for generated files
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HelloGearResponse'
+  /tolerances/coupon:
+    post:
+      summary: Produce a tolerance calibration coupon
+      operationId: generateToleranceCoupon
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ToleranceCouponRequest'
+      responses:
+        '201':
+          description: Coupon artifact metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CouponResponse'
+  /tolerances/profile:
+    post:
+      summary: Record tolerance measurements for a printer/material pair
+      operationId: recordToleranceProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ToleranceProfile'
+      responses:
+        '200':
+          description: Stored profile confirmation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToleranceProfile'
+components:
+  schemas:
+    EnvVerifyRequest:
+      type: object
+      properties:
+        osName:
+          type: string
+          enum: [macOS, Ubuntu]
+        osVersion:
+          type: string
+        pythonPath:
+          type: string
+        checkOptionalTools:
+          type: boolean
+          default: true
+      required: [osName, osVersion, pythonPath]
+    EnvironmentProfile:
+      type: object
+      properties:
+        osName:
+          type: string
+          enum: [macOS, Ubuntu]
+        osVersion:
+          type: string
+        pythonVersion:
+          type: string
+        uvActive:
+          type: boolean
+        packages:
+          type: array
+          items:
+            $ref: '#/components/schemas/PackageRecord'
+        verificationTimestamp:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [ready, missing-deps, incompatible]
+      required: [osName, osVersion, pythonVersion, uvActive, packages, verificationTimestamp, status]
+    PackageRecord:
+      type: object
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+        status:
+          type: string
+          enum: [installed, missing, mismatch]
+      required: [name, version, status]
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            type: string
+      required: [message]
+    ScaffoldRequest:
+      type: object
+      properties:
+        rootPath:
+          type: string
+        autofix:
+          type: boolean
+          default: false
+      required: [rootPath]
+    ScaffoldReport:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [pass, fail]
+        checkedAt:
+          type: string
+          format: date-time
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScaffoldResult'
+      required: [status, checkedAt, results]
+    ScaffoldResult:
+      type: object
+      properties:
+        path:
+          type: string
+        state:
+          type: string
+          enum: [present, missing, unexpected]
+        notes:
+          type: string
+      required: [path, state]
+    HelloGearRequest:
+      type: object
+      properties:
+        teeth:
+          type: integer
+          minimum: 10
+          maximum: 120
+          default: 20
+        module:
+          type: number
+          format: float
+          minimum: 0.5
+          default: 2.0
+        width:
+          type: number
+          format: float
+          minimum: 2.0
+          default: 8.0
+        outputFormats:
+          type: array
+          items:
+            type: string
+            enum: [stl, step]
+          default: [stl, step]
+      required: [module, teeth]
+    HelloGearResponse:
+      type: object
+      properties:
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/Artifact'
+        metadata:
+          type: object
+          properties:
+            pitchDiameter:
+              type: number
+              format: float
+            faceWidth:
+              type: number
+              format: float
+            estimatedPrintTimeMinutes:
+              type: number
+      required: [files]
+    Artifact:
+      type: object
+      properties:
+        path:
+          type: string
+        format:
+          type: string
+        sizeBytes:
+          type: integer
+      required: [path, format]
+    ToleranceCouponRequest:
+      type: object
+      properties:
+        diameter:
+          type: number
+          format: float
+          default: 5.0
+        offsets:
+          type: array
+          items:
+            type: number
+          default: [-0.2, -0.1, 0.0, 0.1, 0.2]
+      required: [diameter]
+    CouponResponse:
+      type: object
+      properties:
+        artifact:
+          $ref: '#/components/schemas/Artifact'
+        offsets:
+          type: array
+          items:
+            type: number
+      required: [artifact, offsets]
+    ToleranceProfile:
+      type: object
+      properties:
+        printerId:
+          type: string
+        material:
+          type: string
+          enum: [PLA+, PETG, ASA, Nylon, Nylon-CF]
+        measurements:
+          type: array
+          items:
+            $ref: '#/components/schemas/ToleranceMeasurement'
+        updatedAt:
+          type: string
+          format: date-time
+      required: [printerId, material, measurements]
+    ToleranceMeasurement:
+      type: object
+      properties:
+        offsetMm:
+          type: number
+          format: float
+        fitQuality:
+          type: string
+          enum: [press, snug, free]
+        notes:
+          type: string
+      required: [offsetMm, fitQuality]

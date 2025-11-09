@@ -1,0 +1,8 @@
+printer_id: sample-printer
+material: PLA+
+updated_at: '2025-11-08T04:09:18+00:00'
+measurements:
+- offset_mm: 0.0
+  fit_quality: snug
+- offset_mm: 0.1
+  fit_quality: free

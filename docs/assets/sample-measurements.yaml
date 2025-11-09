@@ -1,0 +1,5 @@
+measurements:
+  - offset_mm: 0.0
+    fit_quality: snug
+  - offset_mm: 0.1
+    fit_quality: free

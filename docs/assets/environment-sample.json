@@ -1,0 +1,40 @@
+{
+  "osName": "Darwin",
+  "osVersion": "23.6.0",
+  "pythonVersion": "3.12.12",
+  "uvActive": true,
+  "packages": [
+    {
+      "name": "build123d",
+      "version": "0.6.0",
+      "status": "installed"
+    },
+    {
+      "name": "cadquery",
+      "version": "2.4.0",
+      "status": "installed"
+    },
+    {
+      "name": "numpy",
+      "version": "1.26.4",
+      "status": "installed"
+    },
+    {
+      "name": "pyyaml",
+      "version": "6.0.3",
+      "status": "installed"
+    },
+    {
+      "name": "rich",
+      "version": "14.2.0",
+      "status": "installed"
+    },
+    {
+      "name": "typer",
+      "version": "0.20.0",
+      "status": "installed"
+    }
+  ],
+  "verificationTimestamp": "2025-11-08T04:08:59+00:00",
+  "status": "ready"
+}

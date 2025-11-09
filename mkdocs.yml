@@ -1,0 +1,24 @@
+site_name: Gear Generator CAD Foundations
+site_description: Documentation for the Phase 0 CAD foundation tooling.
+site_url: ""
+repo_url: ""
+nav:
+  - Home: index.md
+  - Environment: environment.md
+  - Scaffold: scaffold.md
+  - Utilities: utilities.md
+  - Quickstart: quickstart.md
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.sections
+    - content.code.copy
+markdown_extensions:
+  - admonition
+  - codehilite
+  - toc:
+      permalink: true
+  - attr_list
+plugins:
+  - search
