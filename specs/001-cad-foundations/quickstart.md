@@ -17,52 +17,22 @@ This creates and installs the pinned environment defined in `pyproject.toml` (Ph
 
 ## 3. Verify the Environment
 
-```bash
-uv run gear-generator env verify --format table
-uv run gear-generator env verify --format json --output data/environment/profile.json
-```
-
-- Confirms Python version, uv activation, and dependency availability.
-- Outputs structured logs via rich.
+Confirm manually that Python 3.12 is active and core dependencies install cleanly via `uv sync`. Run `python -c "import build123d, cadquery"` if you need a quick smoke test.
 
 ## 4. Scaffold Required Paths
 
-```bash
-uv run gear-generator repo scaffold --root . --autofix
-```
+Ensure directories (`src/generators`, `tests`, `docs`, `data`, `outputs`) exist before committing changes. Create any missing paths so contributors land in a predictable layout.
 
-- Ensures directories (`src/generators`, `examples`, `tests`, `docs`, `data`) exist.  
-- Reports missing items and optionally creates them when `--autofix` flag provided.
-
-## 5. Run the `hello_gear` Example
-
-```bash
-uv run gear-generator examples hello-gear --teeth 20 --module 2.0 --width 8.0 --output outputs/examples
-ls outputs/examples/hello_gear.stl
-```
-
-Generates STL and STEP files plus metadata for verification.
-
-## 6. Calibrate Printer Tolerances
-
-```bash
-uv run gear-generator tolerances coupon --diameter 5.0 --output outputs/examples
-# Print coupon, measure fits
-uv run gear-generator tolerances record --printer "prusa-mk4" --material PLA+ --source data/measurements/prusa-mk4.yaml --output data/tolerances
-```
-
-Stores clearance offsets for future parametric models.
-
-## 7. Run Tests
+## 5. Run Tests
 
 ```bash
 just test
 ```
 
-- Executes pytest with unit and integration markers.  
-- Fails fast if CLI or utilities regress.
+- Executes pytest with the available unit suite.  
+- Fails fast if utilities regress.
 
-## 8. Publish Documentation (Optional in Phase 0)
+## 6. Publish Documentation (Optional in Phase 0)
 
 ```bash
 uv run mkdocs serve

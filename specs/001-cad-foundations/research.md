@@ -9,11 +9,11 @@
   - *Text-only STL export*: Lacks interactive inspection, harder for early validation.
 
 ## Decision 2: Environment Verification Strategy
-- **Decision**: Provide a `gear-generator env verify` CLI command that imports core dependencies, checks Python 3.12+, validates uv environment activation, and reports versions in JSON and human-readable formats.  
-- **Rationale**: Matches constitution’s CLI mandate, enables automated CI checks, and gives immediate feedback to onboarding engineers.  
+- **Decision**: Document manual verification steps (installation checklist + quick import smoke test) instead of maintaining bespoke helpers.
+- **Rationale**: Reduces maintenance overhead while still giving engineers a reliable path to confirm Build123d/CadQuery readiness.
 - **Alternatives Considered**:  
-  - *Manual checklist only*: Error-prone and hard to automate.  
-  - *Custom shell script*: Less portable across shells and misses Python import verification.
+  - *Automated helper or CLI*: Additional code to maintain with little added value over the documented checklist.  
+  - *Manual checklist only without smoke test*: Risks overlooking missing Python dependencies.
 
 ## Decision 3: Dependency Pinning Policy
 - **Decision**: Pin Build123d to 0.6.x and CadQuery to 2.4.x with uv-managed `pyproject.toml`, locking minor versions while allowing patch updates.  
@@ -22,14 +22,7 @@
   - *Latest floating versions*: Risk of breaking changes.  
   - *Fully frozen versions*: Increases maintenance overhead when security fixes release.
 
-## Decision 4: Tolerance Calibration Assets
-- **Decision**: Generate a printable fit-coupon STL via `gear-generator tolerances coupon` with embossed offsets (-0.2 mm to +0.2 mm) and record measured fits in YAML under `data/tolerances/{printer}.yaml`.  
-- **Rationale**: Provides repeatable calibration workflow and structured data storage for future automation.  
-- **Alternatives Considered**:  
-  - *Ad-hoc measurements*: Inconsistent and not versionable.  
-  - *External calibration tools*: Adds dependencies and cost, not necessary for PLA/PETG baseline.
-
-## Decision 5: Documentation Tooling
+## Decision 4: Documentation Tooling
 - **Decision**: Use MkDocs Material to host environment guides and utility references generated from Markdown in `docs/`.  
 - **Rationale**: Lightweight static site that integrates well with Markdown, easy to publish later; aligns with library-first documentation needs.  
 - **Alternatives Considered**:  

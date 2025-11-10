@@ -4,7 +4,6 @@ site_url: ""
 repo_url: ""
 nav:
   - Home: index.md
-  - Environment: environment.md
   - Scaffold: scaffold.md
   - Utilities: utilities.md
   - Quickstart: quickstart.md

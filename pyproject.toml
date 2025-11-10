@@ -7,7 +7,6 @@ requires-python = ">=3.12"
 dependencies = [
     "build123d>=0.6,<0.7",
     "cadquery>=2.4,<2.5",
-    "numpy>=1.26.4",
     "pillow>=12.0.0",
     "python-dateutil>=2.9.0.post0",
     "pyyaml>=6.0.3",
@@ -96,10 +95,6 @@ show_error_codes = true
 [[tool.mypy.overrides]]
 module = "tests.*"
 disallow_untyped_defs = false
-
-[[tool.mypy.overrides]]
-module = "generators.core.utils.tolerances"
-ignore_errors = true
 
 [tool.pytest.ini_options]
 minversion = "8.0"
