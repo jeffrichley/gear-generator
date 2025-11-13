@@ -1,0 +1,14 @@
+gear_family: spur
+geometry:
+  clearance: 0.15
+  face_width: 10.0
+  module: 2.0
+  pressure_angle: 20.0
+  tooth_count: 28
+materials:
+  default: PLA_PLUS
+tolerances:
+  backlash_target: 0.7
+  bore_offset: 0.1
+  tooth_profile_scale: 0.985
+variant_id: spur_it_01

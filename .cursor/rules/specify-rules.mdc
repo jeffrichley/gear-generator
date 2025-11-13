@@ -3,6 +3,8 @@
 Auto-generated from all feature plans. Last updated: 2025-11-07
 
 ## Active Technologies
+- Python 3.12+ + Build123d, CadQuery, PyYAML, NumPy (001-gearbox-plan)
+- Local file system (YAML configs, generated STLs/STEPs) (001-gearbox-plan)
 
 - Python 3.12 (per constitution) + Build123d, CadQuery, numpy, pyyaml, rich, typer (CLI), uv (env manager) (001-cad-foundations)
 
@@ -22,6 +24,7 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.12 (per constitution): Follow standard conventions
 
 ## Recent Changes
+- 001-gearbox-plan: Added Python 3.12+ + Build123d, CadQuery, PyYAML, NumPy
 
 - 001-cad-foundations: Added Python 3.12 (per constitution) + Build123d, CadQuery, numpy, pyyaml, rich, typer (CLI), uv (env manager)
 

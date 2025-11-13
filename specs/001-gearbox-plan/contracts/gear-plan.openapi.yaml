@@ -1,0 +1,290 @@
+openapi: 3.1.0
+info:
+  title: Gear Planning API
+  version: 0.1.0
+  description: >-
+    Contract used to validate spur and helical gear configurations, generate printable assets,
+    and track cross-functional review status in alignment with the gear planning specification.
+servers:
+  - url: https://gear-planner.local/api
+paths:
+  /gear-plan/configs/validate:
+    post:
+      summary: Validate a gear configuration payload against canonical schema and planning rules.
+      operationId: validateGearConfig
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GearConfigRequest'
+      responses:
+        '200':
+          description: Configuration is valid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationSuccess'
+        '422':
+          description: Configuration violates schema or planning rules.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailure'
+  /gear-plan/configs/export:
+    post:
+      summary: Generate gear geometry and validation test assets for a validated configuration.
+      operationId: exportGearAssets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportRequest'
+      responses:
+        '202':
+          description: Export job accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportAccepted'
+        '400':
+          description: Request rejected because configuration failed validation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /gear-plan/reviews:
+    post:
+      summary: Record review checklist completion for a specific gear configuration.
+      operationId: submitReview
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewSubmission'
+      responses:
+        '201':
+          description: Review recorded with sign-off metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewRecord'
+        '409':
+          description: Review step already completed or conflicting revision.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    GearConfigRequest:
+      type: object
+      required: [variant_id, gear_family, geometry, tolerances, materials]
+      properties:
+        variant_id:
+          type: string
+        gear_family:
+          type: string
+          enum: [spur, helical]
+        geometry:
+          $ref: '#/components/schemas/GeometryPayload'
+        tolerances:
+          $ref: '#/components/schemas/TolerancePayload'
+        materials:
+          $ref: '#/components/schemas/MaterialPayload'
+        validation:
+          $ref: '#/components/schemas/ValidationPayload'
+        metadata:
+          $ref: '#/components/schemas/MetadataPayload'
+    GeometryPayload:
+      type: object
+      required: [module, tooth_count, pressure_angle, face_width]
+      properties:
+        module:
+          type: number
+          minimum: 0.5
+          maximum: 3.0
+        tooth_count:
+          type: integer
+          minimum: 8
+        pressure_angle:
+          type: number
+          minimum: 14.5
+          maximum: 25
+        helix_angle:
+          type: number
+          minimum: -15
+          maximum: 15
+        face_width:
+          type: number
+          minimum: 3
+          maximum: 25
+        clearance:
+          type: number
+        addendum_override:
+          type: number
+        dedendum_override:
+          type: number
+    TolerancePayload:
+      type: object
+      required: [backlash_target]
+      properties:
+        backlash_target:
+          type: number
+          minimum: 0.5
+          maximum: 1.0
+        bore_offset:
+          type: number
+        tooth_profile_scale:
+          type: number
+    MaterialPayload:
+      type: object
+      required: [default]
+      properties:
+        default:
+          type: string
+          enum: [PLA_PLUS, PETG, ASA, NYLON, NYLON_CF]
+        alternatives:
+          type: array
+          items:
+            type: object
+            properties:
+              material:
+                type: string
+              overrides:
+                $ref: '#/components/schemas/TolerancePayload'
+    ValidationPayload:
+      type: object
+      properties:
+        test_pair:
+          $ref: '#/components/schemas/TestPairPayload'
+        measurements:
+          type: object
+          properties:
+            backlash_method:
+              type: string
+            contact_pattern_targets:
+              type: string
+            bore_fit_targets:
+              type: array
+              items:
+                type: number
+    MetadataPayload:
+      type: object
+      properties:
+        authors:
+          type: array
+          items:
+            type: string
+        revision:
+          type: string
+        notes:
+          type: string
+    ValidationSuccess:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [valid]
+        warnings:
+          type: array
+          items:
+            type: string
+    ValidationFailure:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [invalid]
+        errors:
+          type: array
+          items:
+            type: string
+    ExportRequest:
+      type: object
+      required: [variant_id, output_formats]
+      properties:
+        variant_id:
+          type: string
+        output_formats:
+          type: array
+          items:
+            type: string
+            enum: [stl, step, json]
+        generate_test_pair:
+          type: boolean
+          default: true
+    ExportAccepted:
+      type: object
+      properties:
+        job_id:
+          type: string
+        status:
+          type: string
+          enum: [accepted]
+        eta_seconds:
+          type: integer
+    ReviewSubmission:
+      type: object
+      required: [variant_id, checklist_id, category, items]
+      properties:
+        variant_id:
+          type: string
+        checklist_id:
+          type: string
+        category:
+          type: string
+          enum: [design, fabrication, qa]
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              description:
+                type: string
+              status:
+                type: string
+                enum: [pass, fail, needs-action]
+              notes:
+                type: string
+        signed_off_by:
+          type: string
+    ReviewRecord:
+      type: object
+      properties:
+        review_id:
+          type: string
+        variant_id:
+          type: string
+        checklist_id:
+          type: string
+        category:
+          type: string
+        status:
+          type: string
+          enum: [recorded]
+        timestamp:
+          type: string
+          format: date-time
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+        code:
+          type: string
+    TestPairPayload:
+      type: object
+      properties:
+        reference:
+          type: string
+        print_settings:
+          type: object
+          additionalProperties: true
+        notes:
+          type: string

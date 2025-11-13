@@ -37,35 +37,35 @@ A designer wants to reuse the spur guidance to generate helical options, includi
 
 ---
 
-### User Story 3 - Validate Printability with Test Coupons (Priority: P3)
+### User Story 3 - Validate Printability with Direct Gear Tests (Priority: P3)
 
-A fabrication technician must print a standardized coupon to confirm fit, backlash, and tooth fidelity before green-lighting production runs.
+A fabrication technician must print a representative spur/helical gear pair (or gear plus rack) to confirm fit, backlash, and tooth fidelity before green-lighting production runs.
 
-**Why this priority**: Coupons reduce wasted prints by validating tolerances and tooth contact. They close the loop between CAD assumptions and real printer behavior.
+**Why this priority**: Direct gear tests validate tolerances and tooth contact without relying on separate calibration prints, keeping verification aligned with production parts.
 
-**Independent Test**: Ensure the plan defines coupon geometry, measurement checkpoints, and pass/fail criteria that can be executed independently of full gear builds.
+**Independent Test**: Ensure the plan defines which gear pair to print, measurement checkpoints, and pass/fail criteria that can be executed independently of broader assemblies.
 
 **Acceptance Scenarios**:
 
-1. **Given** the plan, **When** the technician prints the coupon, **Then** they understand what dimensions to measure and how to adjust offsets if results fall outside target ranges.
-2. **Given** the plan, **When** design reviews coupon outcomes, **Then** they can map results back to configuration parameters without additional clarification.
+1. **Given** the plan, **When** the technician prints the designated gear test pair, **Then** they understand what dimensions to measure and how to adjust offsets if results fall outside target ranges.
+2. **Given** the plan, **When** design reviews test outcomes, **Then** they can map results back to configuration parameters without additional clarification.
 
 ### Edge Cases
 
 - Parameter combinations produce tooth undercut or non-integer module relationships; the plan must flag and gate these prior to fabrication.
 - Printer capability varies (e.g., nozzle diameter, filament swelling), requiring documented fallback offsets and reprint triggers.
 - Helical gear handedness conflicts with intended rotation direction; the plan must highlight verification checkpoints before committing to assembly.
-- Coupon prints reveal inconsistent tooth contact across the width, prompting guidance on recalibrating Z-compensation and face-width adjustments.
+- Direct gear tests reveal inconsistent tooth contact across the width, prompting guidance on recalibrating Z-compensation and face-width adjustments.
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
 - **FR-001**: The plan MUST define a canonical `gear_core.yaml` schema covering spur and helical parameters (module, tooth counts, pressure angle, helix angle, face width, backlash, clearance, material presets) along with acceptable ranges or defaults.
-- **FR-002**: The plan MUST outline parameter validation rules, including relationships between sun/planet/ring tooth counts, minimum tooth addendum to avoid undercut, and helix angle limits based on printer capability.
+- **FR-002**: The plan MUST outline parameter validation rules for spur and helical gears, covering module/tooth relationships, minimum addendum to avoid undercut, helix angle limits based on printer capability, and a standardized initial backlash target range of 0.5°–1.0°.
 - **FR-003**: The plan MUST describe the workflow for generating Build123d geometry from configuration data, highlighting shared steps and deltas between spur and helical gears.
-- **FR-004**: The plan MUST specify the content and purpose of printable test coupons, including geometry variants (e.g., tooth section slices, bore/shaft fit ladders), measurement instructions, and acceptance thresholds.
-- **FR-005**: The plan MUST provide guidance for documenting test outcomes, linking measurement deltas back to configuration adjustments (e.g., clearance offsets, backlash targets, helix compensation).
+- **FR-004**: The plan MUST specify the configuration and evaluation method for direct gear fit tests (e.g., mating spur pair, gear-and-rack combo), including measurement instructions and acceptance thresholds.
+- **FR-005**: The plan MUST provide guidance for documenting test outcomes, linking measurement deltas from direct gear tests back to configuration adjustments (e.g., clearance offsets, backlash targets, helix compensation).
 - **FR-006**: The plan MUST enumerate dependencies on shared utilities (tolerance helpers, exporters, materials data) so cross-functional teams know prerequisites before attempting fabrication.
 - **FR-007**: The plan MUST capture review and sign-off checkpoints for engineering, manufacturing, and QA to ensure consistent interpretation before moving to the next gear family.
 
@@ -73,7 +73,7 @@ A fabrication technician must print a standardized coupon to confirm fit, backla
 
 - **GearCoreConfig**: Logical representation of spur/helical parameters stored in `gear_core.yaml`, including required fields, optional overrides, and validation notes.
 - **GearDesignWorkflow**: Ordered set of steps transforming configuration data into validated CAD output, including tolerance application and documentation hand-offs.
-- **PrintableCoupon**: Standardized test artifacts (tooth slices, bore fit ladders, mesh engagement rigs) linked to measurement instructions and decision criteria.
+- **GearTestPair**: Production-geometry spur/helical gear pairs (printed with reduced face width or paired with a rack) used to validate backlash, contact pattern, and bore fit before full-thickness prints.
 - **ReviewChecklist**: Cross-functional sign-off items tying design intent, fabrication readiness, and QA validation into a shared approval artifact.
 
 ## Success Criteria *(mandatory)*
@@ -81,12 +81,18 @@ A fabrication technician must print a standardized coupon to confirm fit, backla
 ### Measurable Outcomes
 
 - **SC-001**: Team members can create a complete spur or helical `gear_core.yaml` entry, including validation notes, in under 30 minutes using only the plan.
-- **SC-002**: At least 90% of initial spur gear prints based on the plan pass coupon verification without rework.
+- **SC-002**: At least 90% of initial spur/helical gear validation prints based on the plan pass direct gear fit tests without rework.
 - **SC-003**: Cross-functional reviewers (design, fabrication, QA) report fewer than two clarification questions during the first review cycle of the plan.
-- **SC-004**: Coupon measurement results can be traced back to specific configuration parameters within five minutes during QA audits.
+- **SC-004**: Direct test measurements can be traced back to specific configuration parameters within five minutes during QA audits.
 
 ## Assumptions
 
 - Build123d and associated utilities (tolerance helpers, exporters) are already installed and documented separately.
 - Teams have access to standard FDM printers with 0.4 mm nozzles and commonly used engineering polymers (PLA+, PETG) for baseline validation.
 - Material-specific offset tables will be refined later; this plan captures the structure and placeholders for those datasets.
+
+## Clarifications
+
+### Session 2025-11-10
+
+- Q: What backlash target range should the plan standardize for initial spur and helical prints? → A: Standardize 0.5°–1.0° backlash range.
